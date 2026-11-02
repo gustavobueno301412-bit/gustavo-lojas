@@ -82,22 +82,22 @@
     <section class="space-y-2">
       <h2 class="text-xs font-bold uppercase tracking-wider text-gray-400">Filtrar por Loja Parceira</h2>
       <div class="flex items-center gap-2 overflow-x-auto scroll-hide py-1">
-        <button onclick="filterByStore('todos')" class="store-filter-btn active bg-yellow-500 text-black font-semibold text-xs px-4 py-2 rounded-full whitespace-nowrap shadow hover:opacity-90 transition">
+        <button onclick="filterByStore('todos'); playClickSound();" class="store-filter-btn active bg-yellow-500 text-black font-semibold text-xs px-4 py-2 rounded-full whitespace-nowrap shadow hover:opacity-90 transition">
           Todas as Lojas
         </button>
-        <button onclick="filterByStore('mercado livre')" class="store-filter-btn bg-gray-800 border border-yellow-400 text-yellow-300 font-semibold text-xs px-4 py-2 rounded-full whitespace-nowrap hover:bg-yellow-400 hover:text-black transition">
+        <button onclick="filterByStore('mercado livre'); playClickSound();" class="store-filter-btn bg-gray-800 border border-yellow-400 text-yellow-300 font-semibold text-xs px-4 py-2 rounded-full whitespace-nowrap hover:bg-yellow-400 hover:text-black transition">
           <i class="fa-solid fa-bag-shopping mr-1"></i> Mercado Livre
         </button>
-        <button onclick="filterByStore('shopee')" class="store-filter-btn bg-gray-800 border border-orange-500 text-orange-400 font-semibold text-xs px-4 py-2 rounded-full whitespace-nowrap hover:bg-orange-500 hover:text-white transition">
+        <button onclick="filterByStore('shopee'); playClickSound();" class="store-filter-btn bg-gray-800 border border-orange-500 text-orange-400 font-semibold text-xs px-4 py-2 rounded-full whitespace-nowrap hover:bg-orange-500 hover:text-white transition">
           <i class="fa-solid fa-cart-shopping mr-1"></i> Shopee
         </button>
-        <button onclick="filterByStore('amazon')" class="store-filter-btn bg-gray-800 border border-gray-400 text-gray-200 font-semibold text-xs px-4 py-2 rounded-full whitespace-nowrap hover:bg-gray-200 hover:text-black transition">
+        <button onclick="filterByStore('amazon'); playClickSound();" class="store-filter-btn bg-gray-800 border border-gray-400 text-gray-200 font-semibold text-xs px-4 py-2 rounded-full whitespace-nowrap hover:bg-gray-200 hover:text-black transition">
           <i class="fa-brands fa-amazon mr-1"></i> Amazon
         </button>
-        <button onclick="filterByStore('hotmart')" class="store-filter-btn bg-gray-800 border border-red-500 text-red-400 font-semibold text-xs px-4 py-2 rounded-full whitespace-nowrap hover:bg-red-500 hover:text-white transition">
+        <button onclick="filterByStore('hotmart'); playClickSound();" class="store-filter-btn bg-gray-800 border border-red-500 text-red-400 font-semibold text-xs px-4 py-2 rounded-full whitespace-nowrap hover:bg-red-500 hover:text-white transition">
           <i class="fa-solid fa-fire mr-1"></i> Hotmart
         </button>
-        <button onclick="filterByStore('magalu')" class="store-filter-btn bg-gray-800 border border-blue-500 text-blue-400 font-semibold text-xs px-4 py-2 rounded-full whitespace-nowrap hover:bg-blue-500 hover:text-white transition">
+        <button onclick="filterByStore('magalu'); playClickSound();" class="store-filter-btn bg-gray-800 border border-blue-500 text-blue-400 font-semibold text-xs px-4 py-2 rounded-full whitespace-nowrap hover:bg-blue-500 hover:text-white transition">
           <i class="fa-solid fa-store mr-1"></i> Magalu
         </button>
       </div>
@@ -109,7 +109,7 @@
         <h2 class="text-sm font-bold uppercase tracking-wider text-gray-300 flex items-center gap-2">
           <i class="fa-solid fa-layer-group text-yellow-400"></i> Categorias Principais
         </h2>
-        <button id="resetCategoryBtn" onclick="resetCategories()" class="hidden text-xs text-yellow-400 hover:underline">
+        <button id="resetCategoryBtn" onclick="resetCategories(); playClickSound();" class="hidden text-xs text-yellow-400 hover:underline">
           Limpar Filtro de Categorias
         </button>
       </div>
@@ -137,7 +137,8 @@
         <span id="productCounter" class="text-xs text-gray-400">Carregando produtos...</span>
       </div>
 
-      <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+      <!-- ALTERADO AQUI: grid-cols-2 no mobile (em vez de grid-cols-1) -->
+      <div id="productsGrid" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5">
         <!-- Cards dos produtos renderizados aqui -->
       </div>
 
@@ -145,7 +146,7 @@
       <div id="emptyState" class="hidden text-center py-16 bg-gray-800/40 rounded-2xl border border-gray-800 space-y-3">
         <i class="fa-solid fa-box-open text-4xl text-gray-600"></i>
         <p class="text-gray-400 text-sm">Nenhum produto encontrado com os filtros selecionados.</p>
-        <button onclick="resetAllFilters()" class="text-xs bg-yellow-500 text-black font-semibold px-4 py-2 rounded-lg hover:bg-yellow-400 transition">
+        <button onclick="resetAllFilters(); playClickSound();" class="text-xs bg-yellow-500 text-black font-semibold px-4 py-2 rounded-lg hover:bg-yellow-400 transition">
           Limpar Todos os Filtros
         </button>
       </div>
@@ -179,6 +180,36 @@
     let currentSearchQuery = "";
     let carouselIndex = 0;
     let carouselInterval = null;
+
+    /* SINTETIZADOR DE EFEITO SONORO VIA WEB AUDIO API (NATIVO DO NAVEGADOR) */
+    let audioCtx = null;
+    function playClickSound() {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+       
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, audioCtx.currentTime); // Frequência do bipe
+        osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.05);
+       
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime); // Volume suave
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+       
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+       
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.05);
+      } catch (e) {
+        console.log("Audio Web API não suportada ou bloqueada", e);
+      }
+    }
 
     /* Dados Demonstrativos (Caso a API_URL esteja vazia de início) */
     const mockBanners = [
@@ -323,7 +354,10 @@
 
         const dot = document.createElement("button");
         dot.className = `w-2.5 h-2.5 rounded-full transition-all ${index === 0 ? 'bg-yellow-400 w-6' : 'bg-gray-500'}`;
-        dot.onclick = () => goToSlide(index);
+        dot.onclick = () => {
+          playClickSound();
+          goToSlide(index);
+        };
         dotsContainer.appendChild(dot);
       });
 
@@ -378,7 +412,10 @@
         }`;
        
         btn.innerHTML = `<i class="fa-solid fa-folder-open text-xs"></i> ${cat.nome}`;
-        btn.onclick = () => selectCategory(cat);
+        btn.onclick = () => {
+          playClickSound();
+          selectCategory(cat);
+        };
         container.appendChild(btn);
       });
     }
@@ -420,6 +457,7 @@
       }`;
       allSubBtn.textContent = "Todas";
       allSubBtn.onclick = () => {
+        playClickSound();
         currentSubcategory = null;
         renderSubcategories();
         renderProducts();
@@ -437,6 +475,7 @@
         }`;
         btn.textContent = sub;
         btn.onclick = () => {
+          playClickSound();
           currentSubcategory = sub;
           renderSubcategories();
           renderProducts();
@@ -548,41 +587,41 @@
 
         card.innerHTML = `
           <div>
-            <div class="relative w-full h-48 bg-gray-900 overflow-hidden">
+            <div class="relative w-full h-36 sm:h-48 bg-gray-900 overflow-hidden">
               <img src="${prod.imagemUrl}" alt="${prod.nome}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
              
-              <span class="absolute top-3 left-3 px-3 py-1 rounded-full text-xs shadow-md flex items-center gap-1.5 ${badgeStyle.bg}">
-                <i class="fa-solid ${badgeStyle.icon}"></i> ${prod.loja}
+              <span class="absolute top-2 left-2 sm:top-3 sm:left-3 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs shadow-md flex items-center gap-1 ${badgeStyle.bg}">
+                <i class="fa-solid ${badgeStyle.icon}"></i> <span class="truncate max-w-[70px] sm:max-w-none">${prod.loja}</span>
               </span>
 
               ${prod.tagDestaque ? `
-                <span class="absolute top-3 right-3 bg-black/80 backdrop-blur-md text-yellow-400 font-bold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md border border-yellow-500/30">
+                <span class="absolute top-2 right-2 sm:top-3 sm:right-3 bg-black/80 backdrop-blur-md text-yellow-400 font-bold text-[9px] sm:text-[10px] uppercase tracking-wider px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md border border-yellow-500/30">
                   ${prod.tagDestaque}
                 </span>
               ` : ''}
             </div>
 
-            <div class="p-4 space-y-2">
-              <div class="text-[11px] font-semibold text-yellow-400 uppercase tracking-wider">
+            <div class="p-2.5 sm:p-4 space-y-1 sm:space-y-2">
+              <div class="text-[9px] sm:text-[11px] font-semibold text-yellow-400 uppercase tracking-wider truncate">
                 ${prod.categoria} • ${prod.subcategoria}
               </div>
 
-              <h3 class="text-sm font-bold text-gray-100 line-clamp-2 group-hover:text-yellow-300 transition">
+              <h3 class="text-xs sm:text-sm font-bold text-gray-100 line-clamp-2 group-hover:text-yellow-300 transition leading-tight sm:leading-normal">
                 ${prod.nome}
               </h3>
             </div>
           </div>
 
-          <div class="p-4 pt-0 space-y-2">
-            <a href="${prod.linkAfiliado}" target="_blank" rel="noopener noreferrer"
-               class="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-extrabold text-xs py-3 px-4 rounded-xl shadow-md flex items-center justify-center gap-2 transition active:scale-95">
-              <span>VER OFERTA NO ${prod.loja.toUpperCase()}</span>
-              <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+          <div class="p-2.5 sm:p-4 pt-0 space-y-1.5 sm:space-y-2">
+            <a href="${prod.linkAfiliado}" target="_blank" rel="noopener noreferrer" onclick="playClickSound();"
+               class="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-extrabold text-[10px] sm:text-xs py-2 sm:py-3 px-2 sm:px-4 rounded-xl shadow-md flex items-center justify-center gap-1 sm:gap-2 transition active:scale-95 text-center">
+              <span>VER OFERTA</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-[10px] sm:text-xs"></i>
             </a>
 
-            <button onclick="shareWhatsApp('${escapeHtml(prod.nome)}', '${prod.linkAfiliado}')"
-                    class="w-full bg-gray-900 hover:bg-gray-700 text-gray-300 text-[11px] font-semibold py-1.5 rounded-lg border border-gray-700 flex items-center justify-center gap-1.5 transition">
-              <i class="fa-brands fa-whatsapp text-green-400 text-sm"></i> Compartilhar Oferta
+            <button onclick="playClickSound(); shareWhatsApp('${escapeHtml(prod.nome)}', '${prod.linkAfiliado}')"
+                    class="w-full bg-gray-900 hover:bg-gray-700 text-gray-300 text-[10px] sm:text-[11px] font-semibold py-1.5 rounded-lg border border-gray-700 flex items-center justify-center gap-1.5 transition">
+              <i class="fa-brands fa-whatsapp text-green-400 text-xs sm:text-sm"></i> Compartilhar
             </button>
           </div>
         `;
