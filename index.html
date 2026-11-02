@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marketplace de Afiliados</title>
+  <!-- Tailwind CSS para estilização moderna e responsiva -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Ícones Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Estilos personalizados para animação do letreiro e carrossel */
+    @keyframes marquee {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+    .animate-marquee {
+      display: inline-block;
+      white-space: nowrap;
+      animation: marquee 25s linear infinite;
+    }
+    .animate-marquee:hover {
+      animation-play-state: paused;
+    }
+    .scroll-hide::-webkit-scrollbar {
+      display: none;
+    }
+    .scroll-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col font-sans selection:bg-yellow-500 selection:text-black">
+
+  <!-- ==================== LETREIRO ROTATIVO (TOP BAR) ==================== -->
+  <div class="bg-yellow-500 text-black font-semibold text-xs md:text-sm py-2 overflow-hidden shadow-md">
+    <div class="animate-marquee font-medium">
+      🚀 Bem-vindo ao nosso Marketplace de Afiliados! • As melhores ofertas do Mercado Livre, Shopee, Magalu, Amazon e Hotmart reunidas em um só lugar! • Atualizado diariamente com links promocionais! 🛍️
+    </div>
+  </div>
+
+  <!-- ==================== CABEÇALHO / NAVBAR ==================== -->
+  <header class="bg-gray-800 border-b border-gray-700 sticky top-0 z-40 shadow-xl">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+      <!-- Logo / Nome do App -->
+      <div class="flex items-center gap-3">
+        <div class="bg-yellow-500 text-black p-2 rounded-xl shadow-lg">
+          <i class="fa-solid fa-store text-xl md:text-2xl"></i>
+        </div>
+        <div>
+          <h1 class="text-xl md:text-2xl font-black tracking-wider text-white">GUSTAVO<span class="text-yellow-400">LOJAS</span></h1>
+          <p class="text-xs text-gray-400">Seu portal de afiliados, achadinhos & promoções</p>
+        </div>
+      </div>
+
+      <!-- Campo de Busca em Tempo Real -->
+      <div class="relative w-full md:w-96">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Digite o nome do produto..."
+          class="w-full bg-gray-900 border border-gray-700 rounded-full py-2.5 pl-11 pr-4 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
+        >
+        <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-gray-400 text-sm"></i>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full space-y-8">
+
+    <!-- ==================== BANNER ROTATIVO (CARROSSEL) ==================== -->
+    <section id="bannerSection" class="relative rounded-2xl overflow-hidden bg-gray-800 shadow-2xl border border-gray-700 min-h-[180px] md:min-h-[300px]">
+      <div id="carouselContainer" class="relative w-full h-full min-h-[180px] md:min-h-[300px]">
+        <!-- Slides inseridos dinamicamente pelo JavaScript -->
+      </div>
+      <!-- Indicadores do Carrossel -->
+      <div id="carouselDots" class="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-2 z-10"></div>
+    </section>
+
+    <!-- ==================== FILTRO POR LOJA / PARCEIROS ==================== -->
+    <section class="space-y-2">
+      <h2 class="text-xs font-bold uppercase tracking-wider text-gray-400">Filtrar por Loja Parceira</h2>
+      <div class="flex items-center gap-2 overflow-x-auto scroll-hide py-1">
+        <button onclick="filterByStore('todos')" class="store-filter-btn active bg-yellow-500 text-black font-semibold text-xs px-4 py-2 rounded-full whitespace-nowrap shadow hover:opacity-90 transition">
+          Todas as Lojas
+        </button>
+        <button onclick="filterByStore('mercado livre')" class="store-filter-btn bg-gray-800 border border-yellow-400 text-yellow-300 font-semibold text-xs px-4 py-2 rounded-full whitespace-nowrap hover:bg-yellow-400 hover:text-black transition">
+          <i class="fa-solid fa-bag-shopping mr-1"></i> Mercado Livre
+        </button>
+        <button onclick="filterByStore('shopee')" class="store-filter-btn bg-gray-800 border border-orange-500 text-orange-400 font-semibold text-xs px-4 py-2 rounded-full whitespace-nowrap hover:bg-orange-500 hover:text-white transition">
+          <i class="fa-solid fa-cart-shopping mr-1"></i> Shopee
+        </button>
+        <button onclick="filterByStore('amazon')" class="store-filter-btn bg-gray-800 border border-gray-400 text-gray-200 font-semibold text-xs px-4 py-2 rounded-full whitespace-nowrap hover:bg-gray-200 hover:text-black transition">
+          <i class="fa-brands fa-amazon mr-1"></i> Amazon
+        </button>
+        <button onclick="filterByStore('hotmart')" class="store-filter-btn bg-gray-800 border border-red-500 text-red-400 font-semibold text-xs px-4 py-2 rounded-full whitespace-nowrap hover:bg-red-500 hover:text-white transition">
+          <i class="fa-solid fa-fire mr-1"></i> Hotmart
+        </button>
+        <button onclick="filterByStore('magalu')" class="store-filter-btn bg-gray-800 border border-blue-500 text-blue-400 font-semibold text-xs px-4 py-2 rounded-full whitespace-nowrap hover:bg-blue-500 hover:text-white transition">
+          <i class="fa-solid fa-store mr-1"></i> Magalu
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== CATEGORIAS PRINCIPAIS ==================== -->
+    <section class="space-y-3">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-gray-300 flex items-center gap-2">
+          <i class="fa-solid fa-layer-group text-yellow-400"></i> Categorias Principais
+        </h2>
+        <button id="resetCategoryBtn" onclick="resetCategories()" class="hidden text-xs text-yellow-400 hover:underline">
+          Limpar Filtro de Categorias
+        </button>
+      </div>
+      <div id="mainCategoriesContainer" class="flex items-center gap-2 overflow-x-auto scroll-hide py-1">
+        <!-- Botões de categorias principais renderizados dinamicamente -->
+      </div>
+    </section>
+
+    <!-- ==================== SUBCATEGORIAS (ATÉ 8 OPÇÕES ESPECÍFICAS) ==================== -->
+    <section id="subCategoriesSection" class="hidden space-y-2 bg-gray-800/60 p-4 rounded-xl border border-gray-700/60">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-yellow-400 flex items-center gap-2">
+        <i class="fa-solid fa-filter"></i> Subcategorias de <span id="currentCategoryTitle" class="text-white"></span>
+      </h3>
+      <div id="subCategoriesContainer" class="flex flex-wrap gap-2 py-1">
+        <!-- Até 8 botões de subcategorias renderizados dinamicamente -->
+      </div>
+    </section>
+
+    <!-- ==================== LISTAGEM DE CARDS DOS PRODUTOS ==================== -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-tags text-yellow-400"></i> Produtos em Destaque
+        </h2>
+        <span id="productCounter" class="text-xs text-gray-400">Carregando produtos...</span>
+      </div>
+
+      <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        <!-- Cards dos produtos renderizados aqui -->
+      </div>
+
+      <!-- Estado Vazio (Nenhum produto encontrado) -->
+      <div id="emptyState" class="hidden text-center py-16 bg-gray-800/40 rounded-2xl border border-gray-800 space-y-3">
+        <i class="fa-solid fa-box-open text-4xl text-gray-600"></i>
+        <p class="text-gray-400 text-sm">Nenhum produto encontrado com os filtros selecionados.</p>
+        <button onclick="resetAllFilters()" class="text-xs bg-yellow-500 text-black font-semibold px-4 py-2 rounded-lg hover:bg-yellow-400 transition">
+          Limpar Todos os Filtros
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== RODAPÉ ==================== -->
+  <footer class="bg-gray-800 border-t border-gray-700 mt-12 py-6 text-center text-xs text-gray-400">
+    <div class="max-w-7xl mx-auto px-4 space-y-2">
+      <p>© 2026 Vitrine Ofertas — Todos os direitos reservados.</p>
+      <p class="text-gray-500">Ao clicar nas ofertas, você será redirecionado para a loja oficial do parceiro.</p>
+    </div>
+  </footer>
+
+  <!-- ==================== LÓGICA JAVASCRIPT ==================== -->
+  <script>
+    /* ==========================================================================
+       ESPAÇO PARA A SUA URL DA PLANILHA GOOGLE (GOOGLE APPS SCRIPT)
+       ========================================================================== */
+    const API_URL = "https://script.google.com/macros/s/AKfycbxlb-D0D4PugeQv_GHY7rOgBdkuw-TjZVOp8WAk56kl809qDibyaGQztuvts1FRwOU_tA/exec";
+
+    /* State global do app */
+    let allBanners = [];
+    let allCategories = [];
+    let allProducts = [];
+
+    let currentCategory = null;
+    let currentSubcategory = null;
+    let currentStore = "todos";
+    let currentSearchQuery = "";
+    let carouselIndex = 0;
+    let carouselInterval = null;
+
+    /* Dados Demonstrativos (Caso a API_URL esteja vazia de início) */
+    const mockBanners = [
+      {
+        id: 1,
+        titulo: "Linha Pet com Ofertas Incríveis",
+        subtitulo: "Rações, brinquedos e acessórios para seu melhor amigo",
+        imagemUrl: "https://images.unsplash.com/photo-1548767797-d8c844163c4c?auto=format&fit=crop&w=1200&q=80",
+        linkDestino: "#"
+      },
+      {
+        id: 2,
+        titulo: "Universo Gamer & Consoles",
+        subtitulo: "Os melhores jogos, controles e periféricos do mercado",
+        imagemUrl: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=1200&q=80",
+        linkDestino: "#"
+      }
+    ];
+
+    const mockCategories = [
+      {
+        nome: "pet",
+        subcategorias: ["Alimentação", "Brinquedos", "Higiene", "Camas & Tocas", "Coleiras & Guias", "Saúde", "Petiscos", "Acessórios"]
+      },
+      {
+        nome: "games",
+        subcategorias: ["Consoles", "Jogos PS5", "Jogos Xbox", "Jogos Nintendo", "Controles", "Headsets", "Cadeiras Gamer", "Colecionáveis"]
+      },
+      {
+        nome: "casa e conforto",
+        subcategorias: ["Cama & Banho", "Decoração", "Iluminação", "Estofados", "Cozinha", "Organização", "Climatização", "Aromas"]
+      }
+    ];
+
+    const mockProducts = [
+      {
+        id: 1,
+        nome: "Ração Premier Pet Cães Adultos Raças Médias 15kg",
+        imagemUrl: "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?auto=format&fit=crop&w=600&q=80",
+        categoria: "pet",
+        subcategoria: "Alimentação",
+        loja: "Mercado Livre",
+        linkAfiliado: "https://mercadolivre.com.br",
+        tagDestaque: "Mais Vendido"
+      },
+      {
+        id: 2,
+        nome: "Arranhador para Gatos com Cama e Brinquedo",
+        imagemUrl: "https://images.unsplash.com/photo-1545249390-6bdfa286032f?auto=format&fit=crop&w=600&q=80",
+        categoria: "pet",
+        subcategoria: "Brinquedos",
+        loja: "Shopee",
+        linkAfiliado: "https://shopee.com.br",
+        tagDestaque: "Frete Grátis"
+      },
+      {
+        id: 3,
+        nome: "Controle Sem Fio DualSense PlayStation 5",
+        imagemUrl: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=600&q=80",
+        categoria: "games",
+        subcategoria: "Controles",
+        loja: "Amazon",
+        linkAfiliado: "https://amazon.com.br",
+        tagDestaque: "Super Oferta"
+      },
+      {
+        id: 4,
+        nome: "Cadeira Gamer Ergonomica Reclinável com Apoio",
+        imagemUrl: "https://images.unsplash.com/photo-1598550476439-6847785fcea6?auto=format&fit=crop&w=600&q=80",
+        categoria: "games",
+        subcategoria: "Cadeiras Gamer",
+        loja: "Mercado Livre",
+        linkAfiliado: "https://mercadolivre.com.br",
+        tagDestaque: "Destaque"
+      }
+    ];
+
+    /* Inicialização do aplicativo */
+    document.addEventListener("DOMContentLoaded", () => {
+      fetchAppData();
+      setupSearch();
+    });
+
+    /* Função de Busca/Download dos dados da API do Google Sheets */
+    async function fetchAppData() {
+      if (!API_URL || API_URL.trim() === "") {
+        console.warn("API_URL não configurada. Carregando dados demonstrativos (mock).");
+        allBanners = mockBanners;
+        allCategories = mockCategories;
+        allProducts = mockProducts;
+        renderAll();
+        return;
+      }
+
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+
+        allBanners = data.banners && data.banners.length > 0 ? data.banners : mockBanners;
+        allCategories = data.categorias && data.categorias.length > 0 ? data.categorias : mockCategories;
+        allProducts = data.produtos && data.produtos.length > 0 ? data.produtos : mockProducts;
+
+        renderAll();
+      } catch (error) {
+        console.error("Erro ao buscar dados do Google Planilhas:", error);
+        allBanners = mockBanners;
+        allCategories = mockCategories;
+        allProducts = mockProducts;
+        renderAll();
+      }
+    }
+
+    /* Renderizar todos os elementos visuais */
+    function renderAll() {
+      renderBanners();
+      renderCategories();
+      renderProducts();
+    }
+
+    /* 1. RENDERIZAR CARROSSEL DE BANNERS */
+    function renderBanners() {
+      const container = document.getElementById("carouselContainer");
+      const dotsContainer = document.getElementById("carouselDots");
+      container.innerHTML = "";
+      dotsContainer.innerHTML = "";
+
+      if (allBanners.length === 0) return;
+
+      allBanners.forEach((banner, index) => {
+        const slide = document.createElement("a");
+        slide.href = banner.linkDestino || "#";
+        slide.target = "_blank";
+        slide.className = `carousel-slide absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out ${index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`;
+        slide.innerHTML = `
+          <img src="${banner.imagemUrl}" alt="${banner.titulo}" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/40 to-transparent flex flex-col justify-end p-5 md:p-8">
+            <h2 class="text-lg md:text-2xl font-black text-white drop-shadow-md">${banner.titulo}</h2>
+            <p class="text-xs md:text-sm text-yellow-300 font-medium drop-shadow">${banner.subtitulo}</p>
+          </div>
+        `;
+        container.appendChild(slide);
+
+        const dot = document.createElement("button");
+        dot.className = `w-2.5 h-2.5 rounded-full transition-all ${index === 0 ? 'bg-yellow-400 w-6' : 'bg-gray-500'}`;
+        dot.onclick = () => goToSlide(index);
+        dotsContainer.appendChild(dot);
+      });
+
+      startCarousel();
+    }
+
+    function startCarousel() {
+      if (carouselInterval) clearInterval(carouselInterval);
+      carouselInterval = setInterval(() => {
+        carouselIndex = (carouselIndex + 1) % allBanners.length;
+        goToSlide(carouselIndex);
+      }, 5000);
+    }
+
+    function goToSlide(index) {
+      carouselIndex = index;
+      const slides = document.querySelectorAll(".carousel-slide");
+      const dots = document.getElementById("carouselDots").children;
+
+      slides.forEach((slide, i) => {
+        if (i === index) {
+          slide.classList.remove("opacity-0", "z-0");
+          slide.classList.add("opacity-100", "z-10");
+        } else {
+          slide.classList.remove("opacity-100", "z-10");
+          slide.classList.add("opacity-0", "z-0");
+        }
+      });
+
+      Array.from(dots).forEach((dot, i) => {
+        if (i === index) {
+          dot.className = "w-6 h-2.5 bg-yellow-400 rounded-full transition-all";
+        } else {
+          dot.className = "w-2.5 h-2.5 bg-gray-500 rounded-full transition-all";
+        }
+      });
+    }
+
+    /* 2. RENDERIZAR CATEGORIAS PRINCIPAIS E SUBCATEGORIAS */
+    function renderCategories() {
+      const container = document.getElementById("mainCategoriesContainer");
+      container.innerHTML = "";
+
+      allCategories.forEach(cat => {
+        const btn = document.createElement("button");
+        const isSelected = currentCategory && currentCategory.nome.toLowerCase() === cat.nome.toLowerCase();
+       
+        btn.className = `category-btn font-semibold text-xs px-4 py-2.5 rounded-xl whitespace-nowrap capitalize border transition flex items-center gap-2 ${
+          isSelected
+            ? 'bg-yellow-500 text-black border-yellow-500 shadow-lg'
+            : 'bg-gray-800 text-gray-200 border-gray-700 hover:border-yellow-500/50'
+        }`;
+       
+        btn.innerHTML = `<i class="fa-solid fa-folder-open text-xs"></i> ${cat.nome}`;
+        btn.onclick = () => selectCategory(cat);
+        container.appendChild(btn);
+      });
+    }
+
+    function selectCategory(category) {
+      if (currentCategory && currentCategory.nome.toLowerCase() === category.nome.toLowerCase()) {
+        resetCategories();
+        return;
+      }
+
+      currentCategory = category;
+      currentSubcategory = null;
+      document.getElementById("resetCategoryBtn").classList.remove("hidden");
+
+      renderCategories();
+      renderSubcategories();
+      renderProducts();
+    }
+
+    function renderSubcategories() {
+      const section = document.getElementById("subCategoriesSection");
+      const container = document.getElementById("subCategoriesContainer");
+      const title = document.getElementById("currentCategoryTitle");
+
+      if (!currentCategory || !currentCategory.subcategorias || currentCategory.subcategorias.length === 0) {
+        section.classList.add("hidden");
+        return;
+      }
+
+      title.textContent = currentCategory.nome.toUpperCase();
+      container.innerHTML = "";
+      section.classList.remove("hidden");
+
+      const allSubBtn = document.createElement("button");
+      allSubBtn.className = `text-xs font-semibold px-3 py-1.5 rounded-lg border transition ${
+        currentSubcategory === null
+          ? 'bg-yellow-400 text-black border-yellow-400'
+          : 'bg-gray-900 text-gray-300 border-gray-700 hover:border-gray-500'
+      }`;
+      allSubBtn.textContent = "Todas";
+      allSubBtn.onclick = () => {
+        currentSubcategory = null;
+        renderSubcategories();
+        renderProducts();
+      };
+      container.appendChild(allSubBtn);
+
+      currentCategory.subcategorias.slice(0, 8).forEach(sub => {
+        const btn = document.createElement("button");
+        const isSelected = currentSubcategory === sub;
+
+        btn.className = `text-xs font-semibold px-3 py-1.5 rounded-lg border transition ${
+          isSelected
+            ? 'bg-yellow-400 text-black border-yellow-400'
+            : 'bg-gray-900 text-gray-300 border-gray-700 hover:border-gray-500'
+        }`;
+        btn.textContent = sub;
+        btn.onclick = () => {
+          currentSubcategory = sub;
+          renderSubcategories();
+          renderProducts();
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function resetCategories() {
+      currentCategory = null;
+      currentSubcategory = null;
+      document.getElementById("resetCategoryBtn").classList.add("hidden");
+      document.getElementById("subCategoriesSection").classList.add("hidden");
+      renderCategories();
+      renderProducts();
+    }
+
+    /* 3. FILTRO DE LOJAS */
+    function filterByStore(storeName) {
+      currentStore = storeName.toLowerCase();
+     
+      const buttons = document.querySelectorAll(".store-filter-btn");
+      buttons.forEach(btn => {
+        const text = btn.textContent.toLowerCase();
+        if ((currentStore === "todos" && text.includes("todas")) || text.includes(currentStore)) {
+          btn.classList.add("bg-yellow-500", "text-black");
+          btn.classList.remove("bg-gray-800");
+        } else {
+          btn.classList.remove("bg-yellow-500", "text-black");
+          btn.classList.add("bg-gray-800");
+        }
+      });
+
+      renderProducts();
+    }
+
+    /* 4. BUSCA POR TEXTO */
+    function setupSearch() {
+      const input = document.getElementById("searchInput");
+      input.addEventListener("input", (e) => {
+        currentSearchQuery = e.target.value.toLowerCase().trim();
+        renderProducts();
+      });
+    }
+
+    /* Helper: Estilização Visual por Loja */
+    function getStoreBadgeStyle(storeName) {
+      const store = (storeName || "").toLowerCase();
+      if (store.includes("mercado livre")) {
+        return { bg: "bg-[#FFF000] text-black font-bold", icon: "fa-bag-shopping" };
+      } else if (store.includes("shopee")) {
+        return { bg: "bg-[#EE4D2D] text-white font-bold", icon: "fa-cart-shopping" };
+      } else if (store.includes("amazon")) {
+        return { bg: "bg-[#232F3E] text-[#FF9900] border border-[#FF9900]/40 font-bold", icon: "fa-amazon" };
+      } else if (store.includes("hotmart")) {
+        return { bg: "bg-[#F04E23] text-white font-bold", icon: "fa-fire" };
+      } else if (store.includes("magalu")) {
+        return { bg: "bg-[#0086FF] text-white font-bold", icon: "fa-store" };
+      }
+      return { bg: "bg-gray-700 text-white", icon: "fa-tag" };
+    }
+
+    /* 5. RENDERIZAR CARDS DOS PRODUTOS (COM EMBARALHAMENTO ALEATÓRIO) */
+    function renderProducts() {
+      const grid = document.getElementById("productsGrid");
+      const emptyState = document.getElementById("emptyState");
+      const counter = document.getElementById("productCounter");
+
+      // Filtragem dinâmica
+      const filtered = allProducts.filter(prod => {
+        if (currentCategory && prod.categoria.toLowerCase() !== currentCategory.nome.toLowerCase()) {
+          return false;
+        }
+        if (currentSubcategory && prod.subcategoria.toLowerCase() !== currentSubcategory.toLowerCase()) {
+          return false;
+        }
+        if (currentStore !== "todos" && !prod.loja.toLowerCase().includes(currentStore)) {
+          return false;
+        }
+        if (currentSearchQuery !== "" && !prod.nome.toLowerCase().includes(currentSearchQuery)) {
+          return false;
+        }
+        return true;
+      });
+
+      // EMBARALHAR OS PRODUTOS ALEATORIAMENTE (ALGORITHM FISHER-YATES SHUFFLE)
+      const shuffled = [...filtered];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+
+      counter.textContent = `${shuffled.length} produto(s) encontrado(s)`;
+      grid.innerHTML = "";
+
+      if (shuffled.length === 0) {
+        grid.classList.add("hidden");
+        emptyState.classList.remove("hidden");
+        return;
+      }
+
+      grid.classList.remove("hidden");
+      emptyState.classList.add("hidden");
+
+      shuffled.forEach(prod => {
+        const badgeStyle = getStoreBadgeStyle(prod.loja);
+        const card = document.createElement("div");
+        card.className = "bg-gray-800 border border-gray-700 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:border-yellow-500/40 transition-all duration-300 flex flex-col justify-between group";
+
+        card.innerHTML = `
+          <div>
+            <div class="relative w-full h-48 bg-gray-900 overflow-hidden">
+              <img src="${prod.imagemUrl}" alt="${prod.nome}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+             
+              <span class="absolute top-3 left-3 px-3 py-1 rounded-full text-xs shadow-md flex items-center gap-1.5 ${badgeStyle.bg}">
+                <i class="fa-solid ${badgeStyle.icon}"></i> ${prod.loja}
+              </span>
+
+              ${prod.tagDestaque ? `
+                <span class="absolute top-3 right-3 bg-black/80 backdrop-blur-md text-yellow-400 font-bold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md border border-yellow-500/30">
+                  ${prod.tagDestaque}
+                </span>
+              ` : ''}
+            </div>
+
+            <div class="p-4 space-y-2">
+              <div class="text-[11px] font-semibold text-yellow-400 uppercase tracking-wider">
+                ${prod.categoria} • ${prod.subcategoria}
+              </div>
+
+              <h3 class="text-sm font-bold text-gray-100 line-clamp-2 group-hover:text-yellow-300 transition">
+                ${prod.nome}
+              </h3>
+            </div>
+          </div>
+
+          <div class="p-4 pt-0 space-y-2">
+            <a href="${prod.linkAfiliado}" target="_blank" rel="noopener noreferrer"
+               class="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-extrabold text-xs py-3 px-4 rounded-xl shadow-md flex items-center justify-center gap-2 transition active:scale-95">
+              <span>VER OFERTA NO ${prod.loja.toUpperCase()}</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+            </a>
+
+            <button onclick="shareWhatsApp('${escapeHtml(prod.nome)}', '${prod.linkAfiliado}')"
+                    class="w-full bg-gray-900 hover:bg-gray-700 text-gray-300 text-[11px] font-semibold py-1.5 rounded-lg border border-gray-700 flex items-center justify-center gap-1.5 transition">
+              <i class="fa-brands fa-whatsapp text-green-400 text-sm"></i> Compartilhar Oferta
+            </button>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    /* Função para compartilhar direto no WhatsApp */
+    function shareWhatsApp(name, link) {
+      const text = `Olha essa oferta que encontrei no app: *${name}*!\nConfira os detalhes e o preço atualizado aqui: ${link}`;
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+    }
+
+    /* Função auxiliar para escapar aspas */
+    function escapeHtml(text) {
+      return (text || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+
+    /* Limpar todos os filtros */
+    function resetAllFilters() {
+      currentSearchQuery = "";
+      document.getElementById("searchInput").value = "";
+      currentStore = "todos";
+      filterByStore("todos");
+      resetCategories();
+    }
+  </script>
+</body>
+</html>
+
+ 
