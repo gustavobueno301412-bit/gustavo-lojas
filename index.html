@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Marketplace de Afiliados</title>
+  <title>Gustavo Lojas</title>
+
+  <!-- ==================== CONFIGURAÇÕES DO PWA ==================== -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#EAB308">
+  <link rel="apple-touch-icon" href="icone-192.png">
+
   <!-- Tailwind CSS para estilização moderna e responsiva -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Ícones Font Awesome -->
@@ -54,8 +60,26 @@
         </div>
       </div>
 
+      <!-- Botões de Ação Rápida do App -->
+      <div class="flex flex-wrap items-center justify-center gap-2">
+        <button onclick="playClickSound(); shareApp();" class="bg-gray-900 hover:bg-gray-700 text-yellow-400 border border-yellow-500/40 font-semibold text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 transition active:scale-95 shadow">
+          <i class="fa-solid fa-share-nodes"></i>
+          <span>Compartilhar App</span>
+        </button>
+
+        <button onclick="playClickSound(); openInstallWhatsApp();" class="bg-green-600 hover:bg-green-500 text-white font-semibold text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 transition active:scale-95 shadow">
+          <i class="fa-brands fa-whatsapp text-sm"></i>
+          <span>Como Instalar</span>
+        </button>
+
+        <button onclick="playClickSound(); openTermsModal();" class="bg-gray-900 hover:bg-gray-700 text-gray-300 border border-gray-600 font-semibold text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 transition active:scale-95 shadow">
+          <i class="fa-solid fa-file-contract text-yellow-400"></i>
+          <span>Termos de Uso</span>
+        </button>
+      </div>
+
       <!-- Campo de Busca em Tempo Real -->
-      <div class="relative w-full md:w-96">
+      <div class="relative w-full md:w-80 lg:w-96">
         <input
           type="text"
           id="searchInput"
@@ -154,9 +178,61 @@
 
   </main>
 
+  <!-- ==================== MODAL DE TERMOS DE USO ==================== -->
+  <div id="termsModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-gray-800 border border-gray-700 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 relative animate-fade-in">
+      <div class="flex items-center justify-between border-b border-gray-700 pb-3">
+        <h3 class="text-base md:text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-file-contract text-yellow-400"></i> Termos de Uso — Gustavo Lojas
+        </h3>
+        <button onclick="playClickSound(); closeTermsModal();" class="text-gray-400 hover:text-white text-lg px-2">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="text-xs md:text-sm text-gray-300 space-y-3 max-h-[60vh] overflow-y-auto pr-1 leading-relaxed">
+        <p>
+          <strong class="text-yellow-400">1. Natureza do Aplicativo (Vitrine de Afiliados):</strong><br>
+          O aplicativo <strong>Gustavo Lojas</strong> atua exclusivamente como uma vitrine digital e portal de curadoria de ofertas e promoções disponíveis na internet. Não somos loja vendedora, fabricante, transportadora ou intermediadora de pagamentos.
+        </p>
+        <p>
+          <strong class="text-yellow-400">2. Redirecionamento para Lojas Parceiras:</strong><br>
+          Ao clicar em qualquer produto ou oferta, você será redirecionado automaticamente para o site ou aplicativo oficial da loja parceira anunciante (como Mercado Livre, Shopee, Amazon, Magalu, Hotmart, entre outras), onde a compra será realizada.
+        </p>
+        <p>
+          <strong class="text-yellow-400">3. Isenção de Responsabilidade:</strong><br>
+          O <strong>Gustavo Lojas</strong> não se responsabiliza por preços, disponibilidade em estoque, prazos de entrega, fretes, qualidade, garantia, trocas, devoluções ou quaisquer serviços oferecidos pelas lojas parceiras e seus respectivos vendedores. Toda e qualquer relação comercial ocorre diretamente entre o usuário e a plataforma oficial onde a compra foi concluída.
+        </p>
+        <p>
+          <strong class="text-yellow-400">4. Divulgação de Afiliado:</strong><br>
+          Os links divulgados nesta vitrine podem conter códigos de rastreamento de afiliado. Ao realizar uma compra através desses links, o desenvolvedor pode receber uma comissão da loja parceira, sem nenhum custo adicional para você.
+        </p>
+      </div>
+
+      <div class="pt-2 border-t border-gray-700 flex justify-end">
+        <button onclick="playClickSound(); closeTermsModal();" class="bg-yellow-500 hover:bg-yellow-400 text-black font-bold text-xs px-5 py-2.5 rounded-xl transition">
+          Entendi e Concordo
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== RODAPÉ ==================== -->
   <footer class="bg-gray-800 border-t border-gray-700 mt-12 py-6 text-center text-xs text-gray-400">
-    <div class="max-w-7xl mx-auto px-4 space-y-2">
+    <div class="max-w-7xl mx-auto px-4 space-y-3">
+      <div class="flex flex-wrap items-center justify-center gap-4 text-xs font-semibold">
+        <button onclick="playClickSound(); shareApp();" class="text-yellow-400 hover:underline flex items-center gap-1">
+          <i class="fa-solid fa-share-nodes"></i> Compartilhar Aplicativo
+        </button>
+        <span class="text-gray-600">•</span>
+        <button onclick="playClickSound(); openTermsModal();" class="text-gray-300 hover:text-yellow-400 hover:underline flex items-center gap-1">
+          <i class="fa-solid fa-file-contract"></i> Termos de Uso
+        </button>
+        <span class="text-gray-600">•</span>
+        <button onclick="playClickSound(); openInstallWhatsApp();" class="text-green-400 hover:underline flex items-center gap-1">
+          <i class="fa-brands fa-whatsapp"></i> Como Instalar o Aplicativo
+        </button>
+      </div>
       <p>© 2026 Vitrine Ofertas — Todos os direitos reservados.</p>
       <p class="text-gray-500">Ao clicar nas ofertas, você será redirecionado para a loja oficial do parceiro.</p>
     </div>
@@ -168,6 +244,9 @@
        ESPAÇO PARA A SUA URL DA PLANILHA GOOGLE (GOOGLE APPS SCRIPT)
        ========================================================================== */
     const API_URL = "https://script.google.com/macros/s/AKfycbxlb-D0D4PugeQv_GHY7rOgBdkuw-TjZVOp8WAk56kl809qDibyaGQztuvts1FRwOU_tA/exec";
+
+    /* Número de WhatsApp para suporte/instalação */
+    const WHATSAPP_INSTALACAO = "5512992448264";
 
     /* State global do app */
     let allBanners = [];
@@ -193,22 +272,60 @@
         }
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-       
+      
         osc.type = 'sine';
         osc.frequency.setValueAtTime(800, audioCtx.currentTime); // Frequência do bipe
         osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.05);
-       
+      
         gain.gain.setValueAtTime(0.15, audioCtx.currentTime); // Volume suave
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
-       
+      
         osc.connect(gain);
         gain.connect(audioCtx.destination);
-       
+      
         osc.start();
         osc.stop(audioCtx.currentTime + 0.05);
       } catch (e) {
         console.log("Audio Web API não suportada ou bloqueada", e);
       }
+    }
+
+    /* ==========================================================================
+       FUNÇÕES DOS 3 NOVOS BOTÕES (COMPARTILHAR APP, TERMOS DE USO, COMO INSTALAR)
+       ========================================================================== */
+    async function shareApp() {
+      const appUrl = window.location.href;
+      const shareTitle = "Gustavo Lojas — Marketplace de Afiliados";
+      const shareText = "Conheça o aplicativo Gustavo Lojas! As melhores ofertas e achadinhos do Mercado Livre, Shopee, Amazon, Magalu e Hotmart reunidos em um só lugar:";
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: shareTitle,
+            text: shareText,
+            url: appUrl
+          });
+        } catch (err) {
+          console.log("Compartilhamento cancelado ou não concluído:", err);
+        }
+      } else {
+        const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + "\n" + appUrl)}`;
+        window.open(whatsappUrl, '_blank');
+      }
+    }
+
+    function openTermsModal() {
+      document.getElementById("termsModal").classList.remove("hidden");
+    }
+
+    function closeTermsModal() {
+      document.getElementById("termsModal").classList.add("hidden");
+    }
+
+    function openInstallWhatsApp() {
+      const msg = "Olá Gustavo! Gostaria de saber como faço para instalar o aplicativo Gustavo Lojas no meu celular.";
+      const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_INSTALACAO}&text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
     }
 
     /* Dados Demonstrativos (Caso a API_URL esteja vazia de início) */
@@ -404,13 +521,13 @@
       allCategories.forEach(cat => {
         const btn = document.createElement("button");
         const isSelected = currentCategory && currentCategory.nome.toLowerCase() === cat.nome.toLowerCase();
-       
+      
         btn.className = `category-btn font-semibold text-xs px-4 py-2.5 rounded-xl whitespace-nowrap capitalize border transition flex items-center gap-2 ${
           isSelected
             ? 'bg-yellow-500 text-black border-yellow-500 shadow-lg'
             : 'bg-gray-800 text-gray-200 border-gray-700 hover:border-yellow-500/50'
         }`;
-       
+      
         btn.innerHTML = `<i class="fa-solid fa-folder-open text-xs"></i> ${cat.nome}`;
         btn.onclick = () => {
           playClickSound();
@@ -496,7 +613,7 @@
     /* 3. FILTRO DE LOJAS */
     function filterByStore(storeName) {
       currentStore = storeName.toLowerCase();
-     
+    
       const buttons = document.querySelectorAll(".store-filter-btn");
       buttons.forEach(btn => {
         const text = btn.textContent.toLowerCase();
@@ -589,7 +706,7 @@
           <div>
             <div class="relative w-full h-36 sm:h-48 bg-gray-900 overflow-hidden">
               <img src="${prod.imagemUrl}" alt="${prod.nome}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-             
+            
               <span class="absolute top-2 left-2 sm:top-3 sm:left-3 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs shadow-md flex items-center gap-1 ${badgeStyle.bg}">
                 <i class="fa-solid ${badgeStyle.icon}"></i> <span class="truncate max-w-[70px] sm:max-w-none">${prod.loja}</span>
               </span>
